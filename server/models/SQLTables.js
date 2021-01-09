@@ -96,7 +96,7 @@ const lowestDailyPriceInsert = `
 INSERT INTO lowest_daily_price (product_id, date, store_name, lowest_daily_price, store_url ) VALUES (1, '12/17/2020', 'Best Buy', 120.23, 'www.bestbuy.com' )
 `;
 
-const usersInsert = `INSERT INTO users (email, password) VALUES ('test1@aol.com', 'monkey123')`;
+const usersInsert = `INSERT INTO couples (email, password) VALUES ('test1@aol.com', 'monkey123')`;
 
 const sessionsInsert = `
 INSERT INTO sessions (user_id, ssid ) VALUES (1, 123)

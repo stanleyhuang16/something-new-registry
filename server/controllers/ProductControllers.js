@@ -37,6 +37,8 @@ productController.addProduct = async (req, res, next) => {
   const { coupleId } = req.params;
   let productInfo = {};
 
+  console.log('google_url', google_url);
+
   //Web scrape the google_url:
   try {
     productInfo = await getProductInfo(google_url); //Returns an object: {lowest_daily_price, product_name, store_url, store_name, image_url}

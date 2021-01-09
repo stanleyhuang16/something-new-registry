@@ -104,7 +104,7 @@ const Main = ({ email, logOut, userId }) => {
 
     const product_id = productId;
 
-    fetch(`/api/products/${userId}/${productId}`, {
+    fetch(`/api/products/deleteproduct/${userId}/${productId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

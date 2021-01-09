@@ -11,7 +11,7 @@ authController.createUser = async (req, res, next) => {
     let queryString = `
     INSERT INTO couples ( email, couple_username, password ) VALUES ($1, $2, $3) RETURNING *
     `;
-    l;
+
     let values = [req.body.email, req.body.coupleUsername, hashedPassword];
 
     priceTrackerDB
@@ -63,7 +63,7 @@ authController.setSSIDCookie = (req, res, next) => {
 //Login Controller - POST Request:
 authController.verifyUser = (req, res, next) => {
   let queryString = `
-    SELECT * FROM users WHERE email=$1
+    SELECT * FROM couples WHERE email=$1
     `;
   let values = [req.body.email];
 

@@ -4,6 +4,8 @@ import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import About from './components/about/About';
 import Main from './components/Main';
+import SearchCouple from './components/findRegistry/searchCouple.jsx';
+import { link } from 'react-router-dom';
 import {
   BrowserRouter,
   Switch,
@@ -22,24 +24,25 @@ const App = (props) => {
   const [password, setPassword] = useState('');
   const [userId, setId] = useState('');
   const [main, setMain] = useState('');
-
+  const [coupleUsername, setCoupleUsername] = useState('');
   const logOut = () => {
     //need endpoint for backend
 
     setEmail('');
   };
 
-  const registerUser = (email, password) => {
+  const registerUser = (email, password, coupleUsername) => {
     fetch('/api/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, coupleUsername }),
     })
       .then((res) => res.json())
-      .then(({ email, userId }) => {
+      .then(({ email, userId, coupleUsername }) => {
         console.log('register res:', email, userId);
+        setCoupleUsername(coupleUsername);
         setEmail(email);
         setId(userId);
         setPassword(password);
@@ -88,6 +91,7 @@ const App = (props) => {
           )}
         />
         <Route path="/about" exact component={About} />
+        <Route path="/searchcouple" exact component={SearchCouple} />
         <Route
           path="/login"
           exact
@@ -99,6 +103,7 @@ const App = (props) => {
             />
           )}
         />
+
         <PrivateRoute
           path="/"
           exact

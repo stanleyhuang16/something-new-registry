@@ -1,14 +1,17 @@
-const express = require("express");
+const express = require('express');
 const authRouter = express.Router();
-const authController = require("../controllers/authControllers.js");
+const authController = require('../controllers/authControllers.js');
 
 //Auth Routers:
+authRouter.get('/searchcouple', authController.lookUpCouple, (req, res) => {
+  res.status(200).json({ coupleUsername: res.locals.coupleUsername });
+});
 
 //SignUp Route:
 //POST Request
 
 authRouter.post(
-  "/signup",
+  '/signup',
   authController.createUser,
   authController.setSSIDCookie,
   (req, res) => {
@@ -20,7 +23,7 @@ authRouter.post(
 //POST Request
 
 authRouter.post(
-  "/login",
+  '/login',
   authController.verifyUser,
   authController.setSSIDCookie,
   (req, res) => {

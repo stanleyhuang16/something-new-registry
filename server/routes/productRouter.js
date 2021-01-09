@@ -1,36 +1,52 @@
-const express = require("express");
+const express = require('express');
 const productRouter = express.Router();
-const productController = require("../controllers/ProductControllers");
+const productController = require('../controllers/ProductControllers');
 
 //Product Routers:
 
 //Get All Products:
 //GET Request
-productRouter.get(
-  "/products/:user",
-  productController.getProducts,
-  (req, res) => {
-    res.status(200).json({ products: res.locals.products });
-  }
-);
+productRouter.get('/:coupleId', productController.getProducts, (req, res) => {
+  res.status(200).json({ products: res.locals.products });
+});
 
-//Add One Product:
+//Couple Add One Product to their registry:
 //POST Request
 productRouter.post(
-  "/products/:user",
+  '/addproduct/:coupleId',
   productController.addProduct,
   (req, res) => {
-    res.status(200).json("Added product");
+    res.status(200).json('Added product to registry');
   }
 );
 
-//Delete One Product:
+//Delete One Product from registry:
 //DELETE Request
 productRouter.delete(
-  "/products/:user/:id",
+  '/deleteproduct/:coupleId/:productId',
   productController.deleteProduct,
   (req, res) => {
-    res.status(200).json("Delete product");
+    res.status(200).json('Deleted product from registry');
+  }
+);
+
+//User clicks "buy from store" -> grey out product
+// POST request
+productRouter.post(
+  '/buyproduct/:coupleId',
+  productController.buyProduct,
+  (req, res) => {
+    res.status(200).json('guest is buying this product');
+  }
+);
+
+//User indicates they have already purchased product
+//POST request
+productRouter.post(
+  '/purchasedproduct/:coupleId',
+  productController.purchasedProduct,
+  (req, res) => {
+    res.status(200).json('guest has already purchased this product');
   }
 );
 

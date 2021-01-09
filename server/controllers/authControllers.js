@@ -1,5 +1,5 @@
-const priceTrackerDB = require("../models/priceTrackerModel.js");
-const bcrypt = require("bcryptjs");
+const priceTrackerDB = require('../models/priceTrackerModel.js');
+const bcrypt = require('bcryptjs');
 
 const authController = {};
 
@@ -9,15 +9,17 @@ authController.createUser = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     let queryString = `
-    INSERT INTO users ( email, password) VALUES ($1, $2) RETURNING *
-    `; 
-    let values = [req.body.email, hashedPassword];
+    INSERT INTO couples ( email, couple_username, password ) VALUES ($1, $2, $3) RETURNING *
+    `;
+
+    let values = [req.body.email, req.body.coupleUsername, hashedPassword];
 
     priceTrackerDB
       .query(queryString, values)
       .then((data) => {
         res.locals.loginInfo = {};
-        res.locals.loginInfo.userId = data.rows[0]._id;
+        res.locals.loginInfo.coupleId = data.rows[0]._id;
+        res.locals.loginInfo.coupleUsername = data.rows[0].coupleusername;
         res.locals.loginInfo.email = req.body.email;
         return next();
       })
@@ -26,8 +28,8 @@ authController.createUser = async (req, res, next) => {
         return next(err);
       });
   } else {
-    console.log("password or username rejected");
-    return res.status(418).json({ error: "invalid email or password" });
+    console.log('password or username rejected');
+    return res.status(418).json({ error: 'invalid email or password' });
   }
 };
 
@@ -37,33 +39,32 @@ authController.setSSIDCookie = (req, res, next) => {
   let randomNumber = Math.floor(Math.random() * 1000000);
   let options = { maxAge: 90000000, httpOnly: true };
 
-  res.cookie("ssid", randomNumber, options);
+  res.cookie('ssid', randomNumber, options);
 
   //second, save the ssid into the database.
-  let queryString = `
-  INSERT INTO sessions ( user_id, ssid) VALUES ($1, $2) RETURNING *
-  `; 
-  let values = [res.locals.loginInfo.userId, randomNumber];
+  // let queryString = `
+  // INSERT INTO sessions ( user_id, ssid) VALUES ($1, $2) RETURNING *
+  // `;
+  // let values = [res.locals.loginInfo.userId, randomNumber];
 
-  priceTrackerDB
-    .query(queryString, values)
-    .then((data) => {
-      return next();
-    })
-    .catch((err) => {
-      console.log(err);
-      return next(err);
-    });
+  // priceTrackerDB
+  //   .query(queryString, values)
+  //   .then((data) => {
+  //     return next();
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     return next(err);
+  //   });
 
   return next();
 };
 
 //Login Controller - POST Request:
 authController.verifyUser = (req, res, next) => {
-
   let queryString = `
-    SELECT * FROM users WHERE email=$1
-    `; 
+    SELECT * FROM couples WHERE email=$1
+    `;
   let values = [req.body.email];
 
   priceTrackerDB
@@ -79,18 +80,26 @@ authController.verifyUser = (req, res, next) => {
               res.locals.loginInfo.email = req.body.email;
               return next();
             } else {
-              return res.status(400).json({ error: "invalid password" });
+              return res.status(400).json({ error: 'invalid password' });
             }
           });
       } else {
-        console.log("invalid email or password");
-        return res.status(200).json({ error: "invalid email or password" });
+        console.log('invalid email or password');
+        return res.status(200).json({ error: 'invalid email or password' });
       }
     })
     .catch((err) => {
       console.log(err);
       return next(err);
     });
+};
+
+authController.checkUsername = (req, res, next) => {
+  return next();
+};
+
+authController.lookUpCouple = (req, res, next) => {
+  return next();
 };
 
 module.exports = authController;

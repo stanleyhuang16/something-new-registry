@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {Link} from 'react-router-dom';
 import useInput from '../hooks/useInput';
 import Register from './Register';
 import LoginNavBar from '../nav/LoginNavBar';
@@ -31,6 +32,8 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
 	const handleClose = () => setOpen(false);
 	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
+	// const buildHandler =()=> 
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
@@ -43,6 +46,9 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
 		resetPw();
 	};
 
+
+	
+
 	return (
 		<div
 			className={classes.root}
@@ -52,57 +58,14 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
 				<LoginNavBar />
 			</AppBar>
 			<Box className={classes.loginBox} flexWrap="wrap">
-				<Grow in>
-					<div>
-						<Typography
-							variant="h2"
-							color="primary"
-							style={{ fontWeight: '600' }}
-						>
-							Price Tracker
-						</Typography>
-						<Typography variant="body1">
-							Track items on{' '}
-							<span
-								className={classes.googleLetters}
-								style={{ color: '#4285F4' }}
-							>
-								G
-							</span>
-							<span
-								className={classes.googleLetters}
-								style={{ color: '#DB4437' }}
-							>
-								o
-							</span>
-							<span
-								className={classes.googleLetters}
-								style={{ color: '#F4B400' }}
-							>
-								o
-							</span>
-							<span
-								className={classes.googleLetters}
-								style={{ color: '#4285F4' }}
-							>
-								g
-							</span>
-							<span
-								className={classes.googleLetters}
-								style={{ color: '#0F9D58' }}
-							>
-								l
-							</span>
-							<span
-								className={classes.googleLetters}
-								style={{ color: '#DB4437' }}
-							>
-								e
-							</span>{' '}
-							and get price drop notifications anytime.
-						</Typography>
-					</div>
-				</Grow>
+			<Button
+			className={classes.loginCreateAccountBtn}
+			onClick={handleClickOpen}
+			variant="contained"
+		>
+			Build your own
+		</Button>
+			<Link to='/searchcouple'>Find Registry</Link>
 				<Slide direction="up" in>
 					<Paper className={classes.loginPaper} elevation={10}>
 						<form className={classes.loginForm} onSubmit={handleSubmit}>
@@ -146,13 +109,7 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
 							</Button>
 						</form>
 						<Divider className={classes.loginDivider} variant="middle" />
-						<Button
-							className={classes.loginCreateAccountBtn}
-							onClick={handleClickOpen}
-							variant="contained"
-						>
-							Create Account
-						</Button>
+						
 						<Dialog open={open} onClose={handleClose}>
 							<Register registerUser={registerUser} setOpen={setOpen} />
 						</Dialog>

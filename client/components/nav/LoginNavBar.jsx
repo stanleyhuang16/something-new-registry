@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 
 const LoginNavBar = () => (
 	<nav>
-		<Link to="/register" style={{ visibility: 'hidden' }}>
-			Register
+		<Link to="/register" >
+			Login
 		</Link>
-		<Link to="/about" style={{ visibility: 'hidden' }}>
+		<Link to="/about">
 			About
 		</Link>
 	</nav>

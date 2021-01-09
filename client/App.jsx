@@ -4,6 +4,8 @@ import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import About from './components/about/About';
 import Main from './components/Main';
+import SearchCouple from './components/findRegistry/searchCouple.jsx'
+import {link} from 'react-router-dom';
 import {
 	BrowserRouter,
 	Switch,
@@ -74,6 +76,7 @@ const App = (props) => {
 
 	return (
 		<BrowserRouter>
+		
 			<Switch>
 				<Route
 					path="/register"
@@ -83,6 +86,7 @@ const App = (props) => {
 					)}
 				/>
 				<Route path="/about" exact component={About} />
+				<Route path="/searchcouple" exact component={SearchCouple}/>
 				<Route
 					path="/login"
 					exact
@@ -94,6 +98,8 @@ const App = (props) => {
 						/>
 					)}
 				/>
+				
+				
 				<PrivateRoute
 					path="/"
 					exact

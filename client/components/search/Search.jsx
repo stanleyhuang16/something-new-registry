@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import useInput from '../hooks/useInput';
-import SearchList from './SearchList';
-import useToggler from '../hooks/useToggler';
-import Loader from './Loader';
-import { Button, TextField, Dialog } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import Spinner from './Spinner';
-import useStyles from '../../style/theme';
+import React, { useState, useEffect, useRef } from "react";
+import useInput from "../hooks/useInput";
+import SearchList from "./SearchList";
+import useToggler from "../hooks/useToggler";
+import Loader from "./Loader";
+import { Button, TextField, Dialog } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
+import Spinner from "./Spinner";
+import useStyles from "../../style/theme";
 
 const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
   const firstRender = useRef(true);
-  const [searchVal, handleSearchVal, resetSearch] = useInput('');
-  const [urlInput, setUrl, resetUrl] = useInput('');
+  const [searchVal, handleSearchVal, resetSearch] = useInput("");
+  const [urlInput, setUrl, resetUrl] = useInput("");
   const [results, setResults] = useState([]);
   const [isFetching, toggler] = useToggler(false);
   const [open, setOpen] = useState(false);
@@ -20,7 +20,7 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!searchVal) return alert('Please fill in the search bar input!');
+    if (!searchVal) return alert("Please fill in the search bar input!");
 
     toggler();
 
@@ -29,7 +29,7 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
     )
       .then((response) => response.json())
       .then((response) => {
-        const goodUrl = 'google.com/shopping/product/';
+        const goodUrl = "google.com/shopping/product/";
 
         const items = response.shopping_results
           .filter((item) => {
@@ -37,10 +37,10 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
           })
           .slice(0, 10);
 
-        console.log('items: ', items);
+        console.log("items: ", items);
         setOpen(true);
         setResults(items);
-        console.log('open: ', open);
+        console.log("open: ", open);
         firstRender.current = false;
       })
       .catch((err) => console.log(err));
@@ -56,11 +56,11 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
   const handleUrl = (e) => {
     e.preventDefault();
 
-    const goodUrl = 'google.com/shopping/product/';
+    const goodUrl = "google.com/shopping/product/";
 
     if (!urlInput.includes(goodUrl)) {
       resetUrl();
-      return alert('Invalid product url. Please try again');
+      return alert("Invalid product url. Please try again");
     }
 
     setSpinner(true);
@@ -77,10 +77,10 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
 
     const google_url = urlInput;
 
-    fetch(`/api/products/addproduct/${userId}`, {
-      method: 'POST',
+    fetch(`/api/products/${userId}`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         google_url,
@@ -94,9 +94,9 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
         resetUrl();
       })
       .catch((err) => {
-        console.log('main ue addProduct', err);
+        console.log("main ue addProduct", err);
         setSpinner(false);
-        alert('Uh oh! Seems like the link is broken. Please try again.');
+        alert("Uh oh! Seems like the link is broken. Please try again.");
         resetUrl();
       });
   }, [spinner]);
@@ -135,23 +135,23 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
       >
         Search
       </Button>
-      <TextField
-        className={classes.searchBar}
-        variant="outlined"
-        label="Enter Product URL"
-        value={urlInput}
-        onChange={setUrl}
-        inputProps={{ className: classes.searchBar }}
-      />
-      <Button
-        className={classes.searchBtn}
-        variant="contained"
-        color="primary"
-        onClick={handleUrl}
-        endIcon={<SearchIcon />}
-      >
-        Enter Url
-      </Button>
+      {/* <TextField
+					className={classes.searchBar}
+					variant="outlined"
+					label="Enter Product URL"
+					value={urlInput}
+					onChange={setUrl}
+					inputProps={{ className: classes.searchBar }}
+				/> */}
+      {/* <Button
+					className={classes.searchBtn}
+					variant="contained"
+					color="primary"
+					onClick={handleUrl}
+					endIcon={<SearchIcon />}
+				>
+					Enter Url
+				</Button> */}
     </>
   );
 };

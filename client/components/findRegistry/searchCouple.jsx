@@ -17,12 +17,11 @@ const SearchCouple = (coupleUserName) => {
     // 1. Type couple ID from
     // 2. On send, the couple card with picture will apear on sucesssful query
     // 3. If couple can not be found, it will display a massage
-    fetch(`/api/findreg/${coupleUserName}`, {
+    fetch(`/api/auth/searchcouple/${coupleUserName}`, {
       method: "GET",
       header: {
         "content-type": "Application/JSON",
       },
-      bodyt: JSON.stringify(coupleUserName),
     })
       .then((resp) => {
         if (resp.status === 200) {

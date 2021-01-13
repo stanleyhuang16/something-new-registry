@@ -135,23 +135,23 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
       >
         Search
       </Button>
-      {/* <TextField
-					className={classes.searchBar}
-					variant="outlined"
-					label="Enter Product URL"
-					value={urlInput}
-					onChange={setUrl}
-					inputProps={{ className: classes.searchBar }}
-				/> */}
-      {/* <Button
-					className={classes.searchBtn}
-					variant="contained"
-					color="primary"
-					onClick={handleUrl}
-					endIcon={<SearchIcon />}
-				>
-					Enter Url
-				</Button> */}
+      <TextField
+        className={classes.searchBar}
+        variant="outlined"
+        label="Enter Product URL"
+        value={urlInput}
+        onChange={setUrl}
+        inputProps={{ className: classes.searchBar }}
+      />
+      <Button
+        className={classes.searchBtn}
+        variant="contained"
+        color="primary"
+        onClick={handleUrl}
+        endIcon={<SearchIcon />}
+      >
+        Enter Url
+      </Button>
     </>
   );
 };

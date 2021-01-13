@@ -96,6 +96,7 @@ authController.verifyUser = (req, res, next) => {
 
 //Checks if the username is in the database.
 authController.checkUsername = (req, res, next) => {
+  console.log('in check username');
   const { coupleusername } = req.params;
   let queryString = `
     SELECT *

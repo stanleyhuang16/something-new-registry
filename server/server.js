@@ -31,6 +31,7 @@ app.get('/api/', (req, res) => {
 });
 
 app.get('/:coupleusername', authController.checkUsername, (req, res) => {
+  console.log('incoupleusername endpoint');
   res.status(200).json(res.locals.coupleInfo);
 });
 

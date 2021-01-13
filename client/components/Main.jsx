@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import NavBar from './nav/NavBar';
-import ProductList from './product/ProductList';
-import Search from './search/Search';
-import Spinner from './search/Spinner';
-import ScrollTop from './product/ScrollTop';
-import { Grid, Fab } from '@material-ui/core';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import React, { useState, useEffect, useRef } from "react";
+import NavBar from "./nav/NavBar";
+import ProductList from "./product/ProductList";
+import Search from "./search/Search";
+import Spinner from "./search/Spinner";
+import ScrollTop from "./product/ScrollTop";
+import { Grid, Fab } from "@material-ui/core";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 
 const Main = ({ email, logOut, userId }) => {
   const postObj = useRef({});
@@ -17,16 +17,16 @@ const Main = ({ email, logOut, userId }) => {
   const [spinner, setSpinner] = useState(false);
 
   const startSpinner = () => {
-    console.log('spinner heard');
+    console.log("spinner heard");
     setSpinner(true);
   };
 
   //get all products from db
   const getAllProducts = () => {
     fetch(`/api/products/${userId}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
       .then((res) => res.json())
@@ -61,13 +61,13 @@ const Main = ({ email, logOut, userId }) => {
     const product_id = postObj.current.productId;
     const date = postObj.current.date;
 
-    console.log('track button heard');
+    console.log("track button heard");
 
     //make POST request
     fetch(`/api/products/${userId}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         google_url,
@@ -87,9 +87,9 @@ const Main = ({ email, logOut, userId }) => {
         setSpinner(false);
       })
       .catch((err) => {
-        console.log('main ue addProduct', err);
+        console.log("main ue addProduct", err);
         setSpinner(false);
-        alert('Uh oh! Seems like the link is broken. Please try again.');
+        alert("Uh oh! Seems like the link is broken. Please try again.");
       });
 
     Object.getOwnPropertyNames(postObj.current).forEach(
@@ -105,9 +105,9 @@ const Main = ({ email, logOut, userId }) => {
     const product_id = productId;
 
     fetch(`/api/products/deleteproduct/${userId}/${productId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ product_id }),
     })
@@ -116,7 +116,7 @@ const Main = ({ email, logOut, userId }) => {
         console.log(res);
         getAllProducts();
       })
-      .catch((err) => console.log('main ue addProduct', err));
+      .catch((err) => console.log("main ue addProduct", err));
 
     setProductId(null);
   }, [productId]);
@@ -133,7 +133,7 @@ const Main = ({ email, logOut, userId }) => {
           item
           justify="center"
           xs={12}
-          style={{ margin: '2rem 0' }}
+          style={{ margin: "2rem 0" }}
         >
           <Search
             userId={userId}

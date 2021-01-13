@@ -30,9 +30,9 @@ app.get('/api/', (req, res) => {
   res.sendFile(path.join(__dirname, '../index.html'));
 });
 
-//Checks for the username.
 app.get('/:coupleusername', authController.checkUsername, (req, res) => {
-  res.sendStatus(200);
+  console.log('incoupleusername endpoint');
+  res.status(200).json(res.locals.coupleInfo);
 });
 
 //Home page

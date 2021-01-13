@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import NavBar from "../nav/NavBar";
-import { Button, TextField, Dialog } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
-import useInput from "../hooks/useInput";
-import useStyles from "../../style/theme";
-import Search from "../search/Search";
-import useToggler from "../hooks/useToggler";
-import { Grid, Fab } from "@material-ui/core";
-import ScrollTop from "../product/ScrollTop";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import ProductList from "../product/ProductList";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import NavBar from '../nav/NavBar';
+import { Button, TextField, Dialog } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import useInput from '../hooks/useInput';
+import useStyles from '../../style/theme';
+import Search from '../search/Search';
+import useToggler from '../hooks/useToggler';
+import { Grid, Fab } from '@material-ui/core';
+import ScrollTop from '../product/ScrollTop';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import ProductList from '../product/ProductList';
 
 const SearchCouple = (coupleUserName) => {
-  const [searchCoupleRegistry, handleSearchVal, resetSearch] = useInput("");
+  const [searchCoupleRegistry, handleSearchVal, resetSearch] = useInput('');
   const [guessList, setGuessList] = useState([]);
   const classes = useStyles();
   const [lookingCouple, toggler] = useToggler(false);
@@ -22,22 +22,23 @@ const SearchCouple = (coupleUserName) => {
     e.preventDefault();
 
     if (!searchCoupleRegistry)
-      return alert("Please fill in the search bar input!");
+      return alert('Please fill in the search bar input!');
 
     toggler();
 
-    fetch(`/api/auth/searchcouple/${coupleUserName}`, {
-      method: "GET",
+    console.log(searchCoupleRegistry);
+    fetch(`/api/auth/searchcouple/${searchCoupleRegistry}`, {
+      method: 'GET',
       header: {
-        "content-type": "Application/JSON",
+        'content-type': 'Application/JSON',
       },
     })
       .then((resp) => resp.json())
       .then(({ products }) => setGuessList(products))
       .catch((err) => {
-        console.log("err", err);
+        console.log('err', err);
         alert(
-          "Uh oh! looks like we did not find this couple, please try again."
+          'Uh oh! looks like we did not find this couple, please try again.'
         );
       });
   };
@@ -104,7 +105,7 @@ const SearchCouple = (coupleUserName) => {
           item
           justify="center"
           xs={12}
-          style={{ margin: "2rem 0" }}
+          style={{ margin: '2rem 0' }}
         ></Grid>
         <Grid
           container

@@ -1,6 +1,6 @@
 const express = require('express');
 const productRouter = express.Router();
-const productController = require('../controllers/ProductControllers');
+const productController = require('../controllers/productControllers');
 
 //Product Routers:
 
@@ -34,7 +34,10 @@ productRouter.delete(
 // POST request
 productRouter.post(
   '/buyproduct/:coupleId',
-  productController.buyProduct,
+  productController.setOnHoldTrue,
+  productController.scheduleOnHoldFalse,
+  productController.scheduleReminderEmail,
+  productController.redirectToStore,
   (req, res) => {
     res.status(200).json('guest is buying this product');
   }

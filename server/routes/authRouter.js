@@ -2,10 +2,16 @@ const express = require('express');
 const authRouter = express.Router();
 const authController = require('../controllers/authControllers.js');
 
-//Auth Routers:
-authRouter.get('/searchcouple', authController.lookUpCouple, (req, res) => {
-  res.status(200).json({ coupleUsername: res.locals.coupleUsername });
-});
+//Search couples route:
+//
+authRouter.get(
+  '/searchcouple/:coupleQuery',
+  authController.lookUpCouple,
+  (req, res) => {
+    console.log('sending result');
+    res.status(200).json({ usernameMatches: res.locals.usernameMatches });
+  }
+);
 
 //SignUp Route:
 //POST Request

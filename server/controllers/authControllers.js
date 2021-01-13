@@ -5,7 +5,7 @@ const authController = {};
 
 //Signup Controller- POST Request:
 authController.createUser = async (req, res, next) => {
-  if (req.body.email.length > 0 && req.body.password.length > 0) {
+  if (req.body.email.length && req.body.password.length) {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     let queryString = `
@@ -42,20 +42,20 @@ authController.setSSIDCookie = (req, res, next) => {
   res.cookie('ssid', randomNumber, options);
 
   //second, save the ssid into the database.
-  // let queryString = `
-  // INSERT INTO sessions ( user_id, ssid) VALUES ($1, $2) RETURNING *
-  // `;
-  // let values = [res.locals.loginInfo.userId, randomNumber];
+  let queryString = `
+  INSERT INTO sessions (couple_id, ssid) VALUES ($1, $2) RETURNING *
+  `;
+  let values = [res.locals.loginInfo.userId, randomNumber];
 
-  // priceTrackerDB
-  //   .query(queryString, values)
-  //   .then((data) => {
-  //     return next();
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     return next(err);
-  //   });
+  priceTrackerDB
+    .query(queryString, values)
+    .then((data) => {
+      return next();
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
 
   return next();
 };
@@ -70,7 +70,7 @@ authController.verifyUser = (req, res, next) => {
   priceTrackerDB
     .query(queryString, values)
     .then((data) => {
-      if (data.rows.length > 0) {
+      if (data.rows.length) {
         bcrypt
           .compare(req.body.password, data.rows[0].password)
           .then((isMatch) => {
@@ -94,12 +94,66 @@ authController.verifyUser = (req, res, next) => {
     });
 };
 
+//Checks if the username is in the database.
 authController.checkUsername = (req, res, next) => {
-  return next();
+  console.log('in check username');
+  const { coupleusername } = req.params;
+  let queryString = `
+    SELECT *
+    FROM couples
+    WHERE couple_username = $1
+  `;
+
+  let values = [coupleusername];
+
+  priceTrackerDB
+    .query(queryString, values)
+    .then((data) => {
+      if (data.rows.length) {
+        res.locals.coupleInfo = {};
+        res.locals.coupleInfo.coupleUsername = data.rows[0].couple_username;
+        res.locals.coupleInfo.coupleId = data.rows[0]._id;
+        res.locals.coupleInfo.coupleEmail = data.rows[0].email;
+        return next();
+      } else {
+        return res.status(400).json({ error: 'no couple found' });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
 };
 
 authController.lookUpCouple = (req, res, next) => {
-  return next();
+  const { coupleQuery } = req.params;
+
+  let queryString = `
+    SELECT couple_username
+    FROM couples
+    WHERE couple_username LIKE '%' || $1 || '%'
+  `;
+  let values = [coupleQuery];
+
+  priceTrackerDB
+    .query(queryString, values)
+    .then((data) => {
+      console.log('data.rows: ', data.rows);
+      if (data.rows.length) {
+        //do next: need to iterate through the results and grab usernames
+        res.locals.usernameMatches = [];
+        for (let resultRow of data.rows) {
+          res.locals.usernameMatches.push(resultRow.couple_username);
+        }
+        return next();
+      } else {
+        return res.status(400).json({ error: 'no couples match your search' });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
 };
 
 module.exports = authController;

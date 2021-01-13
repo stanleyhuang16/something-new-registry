@@ -30,7 +30,6 @@ app.get('/api/', (req, res) => {
   res.sendFile(path.join(__dirname, '../index.html'));
 });
 
-//if guest knows it already, checks for the username in DB
 app.get('/:coupleusername', authController.checkUsername, (req, res) => {
   res.status(200).json(res.locals.coupleInfo);
 });

@@ -42,20 +42,20 @@ authController.setSSIDCookie = (req, res, next) => {
   res.cookie('ssid', randomNumber, options);
 
   //second, save the ssid into the database.
-  // let queryString = `
-  // INSERT INTO sessions ( user_id, ssid) VALUES ($1, $2) RETURNING *
-  // `;
-  // let values = [res.locals.loginInfo.userId, randomNumber];
+  let queryString = `
+  INSERT INTO sessions (couple_id, ssid) VALUES ($1, $2) RETURNING *
+  `;
+  let values = [res.locals.loginInfo.userId, randomNumber];
 
-  // priceTrackerDB
-  //   .query(queryString, values)
-  //   .then((data) => {
-  //     return next();
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     return next(err);
-  //   });
+  priceTrackerDB
+    .query(queryString, values)
+    .then((data) => {
+      return next();
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
 
   return next();
 };

@@ -63,7 +63,7 @@ const coupleToProductsTable = `
 const sessionsTable = `
 CREATE TABLE sessions (
   _id SERIAL,
-  user_id INT NOT NULL references users(_id),
+  couple_id INT NOT NULL references couples(_id),
   ssid INT NOT NULL,
   PRIMARY KEY (_id)
 )`;

@@ -1,5 +1,7 @@
 const priceTrackerDB = require('../models/priceTrackerModel.js');
 const getProductInfo = require('../utils/productWebscraping.js');
+const CronJob = require('cron').CronJob;
+const sendReminderEmail = require('../emails/sendReminderEmail');
 
 const productController = {};
 
@@ -76,7 +78,7 @@ productController.addProduct = async (req, res, next) => {
   const usersToProductsValues = [coupleId, productId, false];
 
   //Add to lowest_daily_price table using product_id:
-  const lowestDailyPriceQuery = `INSERT into lowest_daily_price (product_id, store_name, lowest_daily_price,	store_url) VALUES ($1,$2,$3,$4)`;
+  const lowestDailyPriceQuery = `INSERT into lowest_daily_price (product_id, store_name, lowest_daily_price, store_url) VALUES ($1,$2,$3,$4)`;
 
   const lowestDailyPriceValues = [
     productId,
@@ -97,9 +99,7 @@ productController.addProduct = async (req, res, next) => {
     return next();
   } catch (err) {
     console.log('error: ', err);
-    return next(
-      res.status(400).send('ERROR in addProducts controller: ' + err)
-    );
+    return next('ERROR in addProducts controller: ');
   }
 };
 
@@ -118,13 +118,157 @@ productController.deleteProduct = (req, res, next) => {
     })
     .catch((err) => {
       console.log('error in deleteProducts: ', err);
-      return next(
-        res.status(400).send('ERROR in deleteProducts controller: ' + err)
-      );
+      return next('ERROR in deleteProducts controller: ');
     });
 };
 
-productController.buyProduct = (req, res, next) => {
+//Greying out:
+
+/*
+endpoint: POST /api/products/buyproduct/:coupleId
+reqBody: {coupleId, productId, guestFirst, guestLast, guestEmail, productUrl}
+resBody:
+ on success: Redirect to the store page in new window
+ on fail: 400 {error: String, productName}
+*/
+
+//Goal: for the couple_to_products table:
+//change on_hold to true when buy product is clicked.
+//15 mins later, change on_hold to false
+
+//Option 1:
+//Immediately change the database to true, then use a cron-job to run in 15 min to change it to false.
+
+//Option 2:
+//move on_hold to a row in mongoDB, then expire that row in 15 mins.
+
+//Job to run: 15 min from the point the link is clicked, change this product to on_hold = false.
+
+//Schedule: Date.now() + 15 min.
+
+// 1. set database to on_hold = true
+productController.setOnHoldTrue = async (req, res, next) => {
+  const { productId, coupleId } = req.body;
+  try {
+    console.log('before setOnHold');
+    const result = await setOnHold(productId, coupleId, true);
+    console.log('result', result);
+    if (result.length === 0)
+      return next('Error: in setOnHoldTrue updating couple_to_products table');
+    next();
+  } catch (err) {
+    next('Error in setOnHoldTrue: ', err);
+  }
+};
+
+// helper function for setOnHoldTrue
+const setOnHold = (productId, coupleId, boolean) => {
+  const queryString = `UPDATE couple_to_products 
+SET on_hold = $3
+WHERE product_id = $1 AND couple_id = $2
+RETURNING *`;
+
+  values = [productId, coupleId, boolean];
+
+  return new Promise((resolve, reject) => {
+    priceTrackerDB
+      .query(queryString, values)
+      .then((data) => {
+        console.log('data.rows', data.rows);
+        resolve(data.rows);
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err);
+      });
+  });
+};
+
+const setOnHoldFalse = (productId, coupleId, boolean) => {
+  const queryString = `UPDATE couple_to_products 
+SET on_hold = $3
+WHERE product_id = $1 AND couple_id = $2
+RETURNING *`;
+
+  values = [productId, coupleId, boolean];
+
+  return new Promise((resolve, reject) => {
+    priceTrackerDB
+      .query(queryString, values)
+      .then((data) => {
+        console.log('data.rows', data.rows);
+        resolve(data.rows);
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err);
+      });
+  });
+};
+
+// 2. schedule a job that set on_hold = false in 15 mins.
+productController.scheduleOnHoldFalse = (req, res, next) => {
+  const { productId, coupleId } = req.body;
+
+  const timeDiff = 1;
+  const currentDateObj = new Date();
+  const newDateObj = new Date(
+    currentDateObj.getTime() + (timeDiff * 60000) / 6
+  );
+
+  const job = new CronJob(newDateObj, () =>
+    setOnHold(productId, coupleId, false)
+  );
+  job.start();
+  next();
+};
+
+//3. schedule a job to send an email - in 12 hours, email reminds guest to click "bought product" if they bought it.
+productController.scheduleReminderEmail = (req, res, next) => {
+  const { productId, coupleId } = req.body;
+
+  const queryString = `SELECT couples.email, couples.couple_username, products.product_name, products.google_url
+  FROM couple_to_products
+    JOIN products ON couple_to_products.product_id=products._id
+    JOIN couples ON couple_to_products.couple_id=couples._id
+  WHERE couple_to_products.couple_id=$1 AND products._id=$2
+  `;
+  values = [coupleId, productId];
+
+  priceTrackerDB
+    .query(queryString, values)
+    .then((data) => {
+      console.log('data.rows', data.rows);
+      if (!data.rows.length) return next('Error in scheduleReminderEmail');
+      const coupleUsername = data.rows[0].couple_username;
+      const email = data.rows[0].email;
+      const productName = data.rows[0].product_name;
+      const siteUrl = data.rows[0].google_url;
+
+      //testing if the email sends immediately. To-Do: schedule this for later.
+      sendReminderEmail(coupleUsername, email, productName, siteUrl);
+      return next();
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
+
+  // const timeDiff = 1;
+  // const currentDateObj = new Date();
+  // const newDateObj = new Date(
+  //   currentDateObj.getTime() + (timeDiff * 60000) / 6
+  // );
+
+  // const job = new CronJob(newDateObj, () =>
+  //   setOnHold(productId, coupleId, false)
+  // );
+  // job.start();
+  next();
+};
+
+//4. redirect the guest to the store page
+productController.redirectToStore = (req, res, next) => {
   next();
 };
 

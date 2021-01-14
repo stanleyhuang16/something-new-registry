@@ -7,6 +7,8 @@ import LoginNavBar from "../nav/LoginNavBar";
 import {
   Button,
   Box,
+  Card,
+  CardMedia,
   Divider,
   AppBar,
   Paper,
@@ -18,7 +20,6 @@ import {
   InputAdornment,
   Dialog,
 } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
 import useStyles from "../../style/theme";
 import inputCheck from "../../utils/inputCheck";
 
@@ -40,23 +41,31 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
   return (
     <div
       className={classes.root}
-      style={{ filter: open ? "blur(5px)" : "none" }}
+      style={{ filter: open ? "blur(5px)" : "none",
+               background: "#E2F0EC" }}
     >
-      <AppBar style={{ filter: loginOpen ? "blur(5px)" : "none" }}>
+      
+      <img style={{top: '0px', width: '100%', position: 'absolute'  }} src="https://i.postimg.cc/cHCX0mhf/kitchen.jpg" alt=""/>
+      
+      <AppBar style={{ filter: loginOpen ? "blur(5px)" : "none", background : "#F3F6F5", height: '8%' }}>
         <LoginNavBar setLoginOpen={setLoginOpen} />
       </AppBar>
+        
+      
+        
       <Box className={classes.loginBox} flexWrap="wrap">
         <Button
           className={classes.loginCreateAccountBtn}
           onClick={handleClickOpen}
           variant="contained"
+          
         >
           Build your own
         </Button>
-        <Link to="/searchcouple">
-          <button className={classes.findRegistryBtn} variant="contained">
+        <Link underline ='none' to="/searchcouple">
+          <Button className={classes.findRegistryBtn} variant="contained">
             Find Registry
-          </button>
+          </Button>
         </Link>
       </Box>
       <Dialog open={open} onClose={handleClose}>

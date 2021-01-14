@@ -150,9 +150,8 @@ resBody:
 productController.setOnHoldTrue = async (req, res, next) => {
   const { productId, coupleId } = req.body;
   try {
-    console.log('before setOnHold');
     const result = await setOnHold(productId, coupleId, true);
-    console.log('result', result);
+    req.io.emit('setHold');
     if (result.length === 0)
       return next('Error: in setOnHoldTrue updating couple_to_products table');
     next();
@@ -175,6 +174,9 @@ RETURNING *`;
       .query(queryString, values)
       .then((data) => {
         console.log('data.rows', data.rows);
+
+        //Here, emit via websocket that on_hold changed.
+
         resolve(data.rows);
       })
       .catch((err) => {
@@ -184,27 +186,27 @@ RETURNING *`;
   });
 };
 
-const setOnHoldFalse = (productId, coupleId, boolean) => {
-  const queryString = `UPDATE couple_to_products 
-SET on_hold = $3
-WHERE product_id = $1 AND couple_id = $2
-RETURNING *`;
+// const setOnHoldFalse = (productId, coupleId, boolean) => {
+//   const queryString = `UPDATE couple_to_products
+// SET on_hold = $3
+// WHERE product_id = $1 AND couple_id = $2
+// RETURNING *`;
 
-  values = [productId, coupleId, boolean];
+//   values = [productId, coupleId, boolean];
 
-  return new Promise((resolve, reject) => {
-    priceTrackerDB
-      .query(queryString, values)
-      .then((data) => {
-        console.log('data.rows', data.rows);
-        resolve(data.rows);
-      })
-      .catch((err) => {
-        console.log(err);
-        reject(err);
-      });
-  });
-};
+//   return new Promise((resolve, reject) => {
+//     priceTrackerDB
+//       .query(queryString, values)
+//       .then((data) => {
+//         console.log('data.rows', data.rows);
+//         resolve(data.rows);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         reject(err);
+//       });
+//   });
+// };
 
 // 2. schedule a job that set on_hold = false in 15 mins.
 productController.scheduleOnHoldFalse = (req, res, next) => {
@@ -216,9 +218,10 @@ productController.scheduleOnHoldFalse = (req, res, next) => {
     currentDateObj.getTime() + (timeDiff * 60000) / 6
   );
 
-  const job = new CronJob(newDateObj, () =>
-    setOnHold(productId, coupleId, false)
-  );
+  const job = new CronJob(newDateObj, () => {
+    setOnHold(productId, coupleId, false);
+    req.io.emit('setHold');
+  });
   job.start();
   next();
 };
@@ -245,8 +248,18 @@ productController.scheduleReminderEmail = (req, res, next) => {
       const productName = data.rows[0].product_name;
       const siteUrl = data.rows[0].google_url;
 
-      //testing if the email sends immediately. To-Do: schedule this for later.
-      sendReminderEmail(coupleUsername, email, productName, siteUrl);
+      // send email after timeDiff minutes
+      const timeDiff = 1;
+      const currentDateObj = new Date();
+      const newDateObj = new Date(
+        currentDateObj.getTime() + (timeDiff * 60000) / 6
+      );
+
+      const job = new CronJob(newDateObj, () =>
+        sendReminderEmail(coupleUsername, email, productName, siteUrl)
+      );
+      job.start();
+
       return next();
     })
     .catch((err) => {
@@ -254,16 +267,6 @@ productController.scheduleReminderEmail = (req, res, next) => {
       return next(err);
     });
 
-  // const timeDiff = 1;
-  // const currentDateObj = new Date();
-  // const newDateObj = new Date(
-  //   currentDateObj.getTime() + (timeDiff * 60000) / 6
-  // );
-
-  // const job = new CronJob(newDateObj, () =>
-  //   setOnHold(productId, coupleId, false)
-  // );
-  // job.start();
   next();
 };
 

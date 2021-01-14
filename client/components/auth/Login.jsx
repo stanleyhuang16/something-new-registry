@@ -76,11 +76,13 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
         </Button>
         <div>
           <Link to="/searchcouple">
-            <SearchCoupleBtn
+            <Button
+              className={classes.loginCreateAccountBtn}
               checkCookies={checkCookies}
-              className={classes.findRegistryBtn}
               variant="contained"
-            />
+            >
+              Search Couple Registry
+            </Button>
           </Link>
         </div>
       </Box>

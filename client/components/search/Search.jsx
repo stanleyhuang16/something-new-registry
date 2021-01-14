@@ -21,11 +21,9 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!searchVal) return alert("Please fill in the search bar input!");
-
     toggler();
-
     fetch(
-      `https://api.scaleserp.com/search?search_type=shopping&price_low_to_high&num=10&api_key=INSERT_YOUR_OWN_KEY_HERE&q=${searchVal}`
+      `https://api.scaleserp.com/search?search_type=shopping&price_low_to_high&num=10&api_key=4B2E54A1C26E4B9986C65B511FCC0F64&q=${searchVal}`
     )
       .then((response) => response.json())
       .then((response) => {
@@ -41,7 +39,8 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
         setOpen(true);
         setResults(items);
         console.log("open: ", open);
-        firstRender.current = false;
+        firstRender.curre;
+        nt = false;
       })
       .catch((err) => console.log(err));
 

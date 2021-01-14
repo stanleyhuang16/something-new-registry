@@ -10,7 +10,7 @@ import useToggler from "../hooks/useToggler";
 import { Grid, Fab } from "@material-ui/core";
 import ScrollTop from "../product/ScrollTop";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-// import ProductList from "../product/ProductList";
+import ProductList from "../product/ProductList";
 
 const SearchCouple = () => {
   const [searchCoupleRegistry, handleSearchVal, resetSearch] = useInput("");

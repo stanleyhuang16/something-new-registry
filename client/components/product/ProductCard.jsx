@@ -25,9 +25,9 @@ const ProductCard = ({
     deleteProduct(productId);
   };
 
-  const handleBuy = () => {
-    buyProduct(productId);
-  };
+  // const handleBuy = () => {
+  //   buyProduct(productId);
+  // };
 
   const classes = useStyles();
 

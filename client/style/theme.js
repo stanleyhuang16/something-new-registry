@@ -44,7 +44,11 @@ const useStyles = makeStyles((theme) => ({
   },
   loginBtn: {
     width: "25rem",
-    borderRadius: "1rem",
+    background: "#69b59a",
+    color: "white",
+    "&:hover": {
+      background: "#54917c",
+    },
   },
   loginDivider: {
     width: "20rem",
@@ -72,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     width: '250px'
   },
 
-  registerForm: {
+  form: {
     padding: "1.5rem 3rem 3rem",
     display: "flex",
     flexDirection: "column",
@@ -84,13 +88,12 @@ const useStyles = makeStyles((theme) => ({
     margin: "0.3rem 0 1.5rem",
   },
   registerBtn: {
-    background: "linear-gradient(to bottom right, #F12711, #F5AF19)",
+    background: "#69b59a",
     color: "white",
     "&:hover": {
-      background: "linear-gradient(to bottom right, #D9230F, #DB9D16)",
+      background: "#54917c",
     },
     marginTop: "1rem",
-    borderRadius: "2rem",
     width: "50%",
     alignSelf: "center",
   },

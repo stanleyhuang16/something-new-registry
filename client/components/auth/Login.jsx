@@ -47,7 +47,7 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
       
       <img style={{top: '0px', width: '100%', position: 'absolute'  }} src="https://i.postimg.cc/cHCX0mhf/kitchen.jpg" alt=""/>
       
-      <AppBar style={{ filter: loginOpen ? "blur(5px)" : "none", background : "#F3F6F5", height: '8%' }}>
+      <AppBar style={{ filter: loginOpen ? "blur(5px)" : "none", background : "#F3F6F5", height: '75px' }}>
         <LoginNavBar setLoginOpen={setLoginOpen} />
       </AppBar>
         

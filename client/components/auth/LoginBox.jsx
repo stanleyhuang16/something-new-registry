@@ -41,7 +41,7 @@ const LoginBox = ({ loginUser, setLoginOpen, ...rest }) => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.form}>
       <IconButton
         aria-label="close"
         onClick={handleCloseLogin}

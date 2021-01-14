@@ -7,6 +7,8 @@ import LoginNavBar from "../nav/LoginNavBar";
 import {
   Button,
   Box,
+  Card,
+  CardMedia,
   Divider,
   AppBar,
   Paper,
@@ -18,7 +20,6 @@ import {
   InputAdornment,
   Dialog,
 } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
 import useStyles from "../../style/theme";
 import inputCheck from "../../utils/inputCheck";
 import SearchCoupleBtn from "../findRegistry/searchCoupleBtn";
@@ -47,11 +48,24 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
   return (
     <div
       className={classes.root}
-      style={{ filter: open ? "blur(5px)" : "none" }}
+      style={{ filter: open ? "blur(5px)" : "none", background: "#E2F0EC" }}
     >
-      <AppBar style={{ filter: loginOpen ? "blur(5px)" : "none" }}>
+      <img
+        style={{ top: "0px", width: "100%", position: "absolute" }}
+        src="https://i.postimg.cc/cHCX0mhf/kitchen.jpg"
+        alt=""
+      />
+
+      <AppBar
+        style={{
+          filter: loginOpen ? "blur(5px)" : "none",
+          background: "#F3F6F5",
+          height: "8%",
+        }}
+      >
         <LoginNavBar setLoginOpen={setLoginOpen} />
       </AppBar>
+
       <Box className={classes.loginBox} flexWrap="wrap">
         <Button
           className={classes.loginCreateAccountBtn}

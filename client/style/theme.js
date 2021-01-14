@@ -1,3 +1,4 @@
+import { blue } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -6,6 +7,11 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "15rem",
     background: "linear-gradient(to right, #FFFFFF, #B2FEFA)",
   },
+
+  homepage: {
+    background: "blue"
+  },
+
   loginBox: {
     width: "100%",
     display: "flex",
@@ -45,19 +51,25 @@ const useStyles = makeStyles((theme) => ({
     margin: "1.5rem 0",
   },
   loginCreateAccountBtn: {
-    background: "#42B72A",
+    background: "#69b59a",
     color: "white",
     "&:hover": {
-      background: "#359222",
+      background: "#54917c",
     },
+    height: '50px',
+    width: '250px'
   },
 
   findRegistryBtn: {
-    background: "#42B72A",
-    color: "white",
+    background: "white",
+    color: "#69b59a",
+    border: "2px solid #69b59a",
     "&:hover": {
-      background: "#359222",
+      background: "#69b59a",
+      color: "white",
     },
+    height: '50px',
+    width: '250px'
   },
 
   registerForm: {

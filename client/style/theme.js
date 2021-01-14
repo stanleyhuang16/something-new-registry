@@ -57,16 +57,19 @@ const useStyles = makeStyles((theme) => ({
       background: "#54917c",
     },
     height: '50px',
-    width: '200px'
+    width: '250px'
   },
 
   findRegistryBtn: {
-    background: "#white",
+    background: "white",
     color: "#69b59a",
+    border: "2px solid #69b59a",
     "&:hover": {
       background: "#69b59a",
-      color: "#white",
+      color: "white",
     },
+    height: '50px',
+    width: '250px'
   },
 
   registerForm: {

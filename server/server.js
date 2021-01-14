@@ -16,6 +16,11 @@ app.use(express.json({ limit: '30mb', extended: true }));
 app.use(express.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
 
+app.use(function (req, res, next) {
+  req.io = io;
+  next();
+});
+
 //Added for Heroku deployment:
 app.use('/build', express.static(path.join(__dirname, '../build')));
 
@@ -50,8 +55,8 @@ app.get('*', (req, res) => {
 io.on('connection', (socket) => {
   console.log('a user connected');
 
-  socket.on('clicked product', (msg) => {
-    socket.emit('send product clicked to all', { msg });
+  socket.on('setHold', () => {
+    console.log('received a setHold');
   });
 
   socket.on('disconnect', () => {

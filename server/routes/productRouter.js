@@ -36,7 +36,7 @@ productRouter.post(
   '/buyproduct/:coupleId',
   productController.setOnHoldTrue,
   productController.scheduleOnHoldFalse,
-  productController.scheduleReminderEmail,
+  // productController.scheduleReminderEmail,
   productController.redirectToStore,
   (req, res) => {
     res.status(200).json('guest is buying this product');

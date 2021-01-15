@@ -39,7 +39,7 @@ const Register = ({ registerUser, setOpen, ...rest }) => {
   };
 
   return (
-    <div className={classes.registerForm}>
+    <div className={classes.form}>
       <IconButton
         aria-label="close"
         onClick={handleClose}

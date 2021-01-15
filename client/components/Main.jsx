@@ -7,11 +7,11 @@ import ScrollTop from "./product/ScrollTop";
 import { Grid, Fab } from "@material-ui/core";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 
-const Main = ({ email, logOut, userId }) => {
+const Main = ({ email, logOut, userId, list, setList }) => {
   const postObj = useRef({});
 
   //state
-  const [list, setList] = useState([]);
+
   const [fetchProduct, setFetch] = useState(false);
   const [productId, setProductId] = useState(null);
   const [spinner, setSpinner] = useState(false);

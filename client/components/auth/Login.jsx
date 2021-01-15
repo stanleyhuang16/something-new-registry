@@ -22,6 +22,7 @@ import {
 } from "@material-ui/core";
 import useStyles from "../../style/theme";
 import inputCheck from "../../utils/inputCheck";
+import SearchCoupleBtn from "../findRegistry/deleteOrBuyBton";
 
 const Login = ({ registerUser, loginUser, ...rest }) => {
   const [emailInput, updateEmail, resetEmail] = useInput("");
@@ -29,6 +30,7 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  // const [checkCookies, setCheckCookies] = useState(false);
   const classes = useStyles();
 
   const handleClickOpen = () => setOpen(true);
@@ -38,35 +40,50 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
   const handleClickShowPasswordLogin = () =>
     setShowPasswordLogin(!showPassword);
 
+  //I need to pass down checkcookies to productcard somehow
+  // if (document.cookie.match(/ssid/)) {
+  //   () => setCheckCookies(true);
+  // }
+
   return (
     <div
       className={classes.root}
-      style={{ filter: open ? "blur(5px)" : "none",
-               background: "#E2F0EC" }}
+      style={{ filter: open ? "blur(5px)" : "none", background: "#E2F0EC" }}
     >
-      
-      <img style={{top: '0px', width: '100%', position: 'absolute'  }} src="https://i.postimg.cc/cHCX0mhf/kitchen.jpg" alt=""/>
-      
-      <AppBar style={{ filter: loginOpen ? "blur(5px)" : "none", background : "#F3F6F5", height: '75px' }}>
+      <img
+        style={{ top: "0px", width: "100%", position: "absolute" }}
+        src="https://i.postimg.cc/cHCX0mhf/kitchen.jpg"
+        alt=""
+      />
+
+      <AppBar
+        style={{
+          filter: loginOpen ? "blur(5px)" : "none",
+          background: "#F3F6F5",
+          height: "8%",
+        }}
+      >
         <LoginNavBar setLoginOpen={setLoginOpen} />
       </AppBar>
-        
-      
-        
+
       <Box className={classes.loginBox} flexWrap="wrap">
         <Button
           className={classes.loginCreateAccountBtn}
           onClick={handleClickOpen}
           variant="contained"
-          
         >
           Build your own
         </Button>
-        <Link underline ='none' to="/searchcouple">
-          <Button className={classes.findRegistryBtn} variant="contained">
-            Find Registry
-          </Button>
-        </Link>
+        <div>
+          <Link to="/searchcouple">
+            <Button
+              className={classes.loginCreateAccountBtn}
+              variant="contained"
+            >
+              Search Couple Registry
+            </Button>
+          </Link>
+        </div>
       </Box>
       <Dialog open={open} onClose={handleClose}>
         <Register registerUser={registerUser} setOpen={setOpen} />

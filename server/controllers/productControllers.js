@@ -2,6 +2,7 @@ const priceTrackerDB = require('../models/priceTrackerModel.js');
 const getProductInfo = require('../utils/productWebscraping.js');
 const CronJob = require('cron').CronJob;
 const sendReminderEmail = require('../emails/sendReminderEmail');
+const sendPurchasedEmailToCouple = require('../emails/sendPurchasedEmailToCouple');
 
 const productController = {};
 
@@ -151,7 +152,7 @@ productController.setOnHoldTrue = async (req, res, next) => {
   const { productId, coupleId } = req.body;
   try {
     const result = await setOnHold(productId, coupleId, true);
-    req.io.emit('setHold');
+    req.io.emit('products updated');
     if (result.length === 0)
       return next('Error: in setOnHoldTrue updating couple_to_products table');
     next();
@@ -174,9 +175,6 @@ RETURNING *`;
       .query(queryString, values)
       .then((data) => {
         console.log('data.rows', data.rows);
-
-        //Here, emit via websocket that on_hold changed.
-
         resolve(data.rows);
       })
       .catch((err) => {
@@ -220,7 +218,7 @@ productController.scheduleOnHoldFalse = (req, res, next) => {
 
   const job = new CronJob(newDateObj, () => {
     setOnHold(productId, coupleId, false);
-    req.io.emit('setHold');
+    req.io.emit('products updated');
   });
   job.start();
   next();
@@ -228,7 +226,7 @@ productController.scheduleOnHoldFalse = (req, res, next) => {
 
 //3. schedule a job to send an email - in 12 hours, email reminds guest to click "bought product" if they bought it.
 productController.scheduleReminderEmail = (req, res, next) => {
-  const { productId, coupleId } = req.body;
+  const { coupleId, productId } = req.body;
 
   const queryString = `SELECT couples.email, couples.couple_username, products.product_name, products.google_url
   FROM couple_to_products
@@ -246,7 +244,7 @@ productController.scheduleReminderEmail = (req, res, next) => {
       const coupleUsername = data.rows[0].couple_username;
       const email = data.rows[0].email;
       const productName = data.rows[0].product_name;
-      const siteUrl = data.rows[0].google_url;
+      const googleUrl = data.rows[0].google_url;
 
       // send email after timeDiff minutes
       const timeDiff = 1;
@@ -256,7 +254,7 @@ productController.scheduleReminderEmail = (req, res, next) => {
       );
 
       const job = new CronJob(newDateObj, () =>
-        sendReminderEmail(coupleUsername, email, productName, siteUrl)
+        sendReminderEmail(coupleUsername, email, productName, googleUrl)
       );
       job.start();
 
@@ -266,17 +264,110 @@ productController.scheduleReminderEmail = (req, res, next) => {
       console.log(err);
       return next(err);
     });
-
-  next();
 };
 
 //4. redirect the guest to the store page
 productController.redirectToStore = (req, res, next) => {
-  next();
+  const { coupleId, productId } = req.body;
+  const queryString = `SELECT DISTINCT ON (lowest_daily_price.product_id) store_url
+  FROM couple_to_products
+    JOIN products ON couple_to_products.product_id=products._id
+    JOIN lowest_daily_price ON lowest_daily_price.product_id=products._id
+  WHERE couple_to_products.couple_id=$1 AND couple_to_products.product_id=$2
+  ORDER BY lowest_daily_price.product_id, lowest_daily_price.timestamp DESC;`;
+
+  values = [coupleId, productId];
+
+  priceTrackerDB
+    .query(queryString, values)
+    .then((data) => {
+      console.log('data.rows', data.rows);
+      if (data.rows.length) {
+        res.locals.storeUrl = data.rows[0].store_url;
+        console.log('res locals storeurl:', res.locals.storeUrl);
+      } else {
+        return next('could not find store url in redirectToStore controller');
+      }
+
+      return next();
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
 };
 
-productController.purchasedProduct = (req, res, next) => {
-  next();
+productController.setPurchasedToTrue = async (req, res, next) => {
+  const { productId, coupleId } = req.body;
+  try {
+    const result = await setPurchased(productId, coupleId, true);
+    req.io.emit('products updated');
+    if (result.length === 0)
+      return next(
+        'Error: in setPurchasedToTrue updating couple_to_products table'
+      );
+    next();
+  } catch (err) {
+    next('Error in setOnHoldTrue: ', err);
+  }
+};
+
+// helper function for setPurchasedToTrue
+const setPurchased = (productId, coupleId, boolean) => {
+  const queryString = `
+    UPDATE couple_to_products 
+    SET purchased = $3
+    WHERE product_id = $1 AND couple_id = $2
+    RETURNING *
+  `;
+
+  values = [productId, coupleId, boolean];
+
+  return new Promise((resolve, reject) => {
+    priceTrackerDB
+      .query(queryString, values)
+      .then((data) => resolve(data.rows))
+      .catch((err) => reject(err));
+  });
+};
+
+productController.notifyCoupleOfPurchase = (req, res, next) => {
+  const { coupleId, productId, guestFirst, guestLast, guestEmail } = req.body;
+
+  const queryString = `SELECT couples.email, couples.couple_username, products.product_name, products.google_url
+  FROM couple_to_products
+    JOIN products ON couple_to_products.product_id=products._id
+    JOIN couples ON couple_to_products.couple_id=couples._id
+  WHERE couple_to_products.couple_id=$1 AND products._id=$2
+  `;
+  values = [coupleId, productId];
+
+  priceTrackerDB
+    .query(queryString, values)
+    .then((data) => {
+      console.log('data.rows', data.rows);
+      if (!data.rows.length) return next('Error in notifyCoupleOfPurchase');
+      const coupleUsername = data.rows[0].couple_username;
+      const coupleEmail = data.rows[0].email;
+      const productName = data.rows[0].product_name;
+      const googleUrl = data.rows[0].google_url;
+
+      sendPurchasedEmailToCouple(
+        coupleUsername,
+        coupleEmail,
+        productName,
+        guestFirst,
+        guestLast,
+        guestEmail,
+        googleUrl
+      );
+
+      return next();
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
 };
 
 module.exports = productController;

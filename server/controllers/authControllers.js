@@ -129,7 +129,7 @@ authController.lookUpCouple = (req, res, next) => {
   const { coupleQuery } = req.params;
 
   let queryString = `
-    SELECT couple_username
+    SELECT couple_username _id
     FROM couples
     WHERE couple_username LIKE '%' || $1 || '%'
   `;
@@ -145,6 +145,11 @@ authController.lookUpCouple = (req, res, next) => {
         for (let resultRow of data.rows) {
           res.locals.usernameMatches.push(resultRow.couple_username);
         }
+
+        //since we're only getting the exact match here, assume that the first result is correct.
+        req.params.coupleId = data.rows[0]._id;
+        console.log('coupleId in lookUpCouple', req.params.coupleId);
+
         return next();
       } else {
         return res.status(400).json({ error: 'no couples match your search' });

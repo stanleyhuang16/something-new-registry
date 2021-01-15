@@ -22,7 +22,7 @@ import {
 } from "@material-ui/core";
 import useStyles from "../../style/theme";
 import inputCheck from "../../utils/inputCheck";
-import SearchCoupleBtn from "../findRegistry/searchCoupleBtn";
+import SearchCoupleBtn from "../findRegistry/deleteOrBuyBton";
 
 const Login = ({ registerUser, loginUser, ...rest }) => {
   const [emailInput, updateEmail, resetEmail] = useInput("");
@@ -30,7 +30,7 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
-  const [checkCookies, setCheckCookies] = useState(false);
+  // const [checkCookies, setCheckCookies] = useState(false);
   const classes = useStyles();
 
   const handleClickOpen = () => setOpen(true);
@@ -41,9 +41,9 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
     setShowPasswordLogin(!showPassword);
 
   //I need to pass down checkcookies to productcard somehow
-  if (document.cookie.match(/ssid/)) {
-    () => setCheckCookies(true);
-  }
+  // if (document.cookie.match(/ssid/)) {
+  //   () => setCheckCookies(true);
+  // }
 
   return (
     <div
@@ -78,7 +78,6 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
           <Link to="/searchcouple">
             <Button
               className={classes.loginCreateAccountBtn}
-              checkCookies={checkCookies}
               variant="contained"
             >
               Search Couple Registry

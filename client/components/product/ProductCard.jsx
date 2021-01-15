@@ -20,14 +20,15 @@ const ProductCard = ({
   productId,
   deleteProduct,
   storeUrl,
+  buyProduct,
 }) => {
   const handleClick = () => {
     deleteProduct(productId);
   };
 
-  // const handleBuy = () => {
-  //   buyProduct(productId);
-  // };
+  const handleBuy = () => {
+    buyProduct(productId);
+  };
 
   const classes = useStyles();
 

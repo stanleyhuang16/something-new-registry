@@ -12,8 +12,8 @@ import ScrollTop from "../product/ScrollTop";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import ProductList from "../product/ProductList";
 
-const SearchCouple = () => {
-  const [searchCoupleRegistry, handleSearchVal, resetSearch] = useInput("");
+const SearchCouple = ({ list, setList }) => {
+  const [coupleUsername, handleSearchVal, resetSearch] = useInput("");
   // const [guessList, setGuessList] = useState([]);
   const classes = useStyles();
   const [lookingCouple, toggler] = useToggler(false);
@@ -21,20 +21,19 @@ const SearchCouple = () => {
   const coupleSearch = (e) => {
     e.preventDefault();
 
-    if (!searchCoupleRegistry)
-      return alert("Please fill in the search bar input!");
+    if (!coupleUsername) return alert("Please fill in the search bar input!");
 
     toggler();
 
-    console.log(searchCoupleRegistry);
-    fetch(`/api/auth/searchcouple/${searchCoupleRegistry}`, {
+    console.log(coupleUsername);
+    fetch(`/api/auth/searchcouple/${coupleUsername}`, {
       method: "GET",
       header: {
         "content-type": "Application/JSON",
       },
     })
       .then((resp) => resp.json())
-      .then(({ products }) => setGuessList(products))
+      .then(({ products }) => setList(products))
       .catch((err) => {
         console.log("err", err);
         alert(
@@ -42,6 +41,7 @@ const SearchCouple = () => {
         );
       });
   };
+
   // buy product from the Register list
   const buyProduct = (e) => {
     e.preventDefault();
@@ -83,7 +83,7 @@ const SearchCouple = () => {
           className={classes.searchBar}
           variant="outlined"
           label="Search for a registry"
-          value={searchCoupleRegistry}
+          value={coupleUsername}
           onChange={handleSearchVal}
           inputProps={{ className: classes.searchBar }}
         />
@@ -118,7 +118,7 @@ const SearchCouple = () => {
           xl={9}
         >
           {/* buyProduct is for the guess to add to a temp cart locations: ProfuctList*/}
-          {/*<ProductList buyProduct={buyProduct} />*/}
+          <ProductList list={list} buyProduct={buyProduct} />
         </Grid>
       </Grid>
       <ScrollTop>

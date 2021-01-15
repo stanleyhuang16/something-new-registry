@@ -39,6 +39,7 @@ const coupleToProductsTable = `
     couple_id INT NOT NULL references couples(_id),
     product_id INT NOT NULL references products(_id),
     on_hold BOOLEAN,
+    purchased BOOLEAN,
     PRIMARY KEY (_id)
   )`;
 

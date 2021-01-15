@@ -39,15 +39,29 @@ productRouter.post(
   // productController.scheduleReminderEmail,
   productController.redirectToStore,
   (req, res) => {
-    res.status(200).json('guest is buying this product');
+    res.status(200).json({ storeUrl: res.locals.storeUrl });
   }
 );
 
 //User indicates they have already purchased product
 //POST request
+
+/*Description: 
+  //pre-work: 
+    X insert "purchased" into the couple_to_products table 
+  //In the req.body we have: {coupleId, guestFirst, guestLast, guestEmail, productId }
+
+    1. set purchased to true in database
+        Inside this controller, emit a websocket event to alert front end. 
+    2. email the couple that this person bought this product. 
+  
+
+*/
+
 productRouter.post(
   '/purchasedproduct/:coupleId',
-  productController.purchasedProduct,
+  productController.setPurchasedToTrue,
+  productController.notifyCoupleOfPurchase,
   (req, res) => {
     res.status(200).json('guest has already purchased this product');
   }

@@ -1,15 +1,21 @@
 const express = require('express');
 const authRouter = express.Router();
 const authController = require('../controllers/authControllers.js');
+const productController = require('../controllers/productControllers.js');
 
 //Search couples route:
 //
 authRouter.get(
   '/searchcouple/:coupleQuery',
   authController.lookUpCouple,
+  productController.getProducts,
   (req, res) => {
     console.log('sending result');
-    res.status(200).json({ usernameMatches: res.locals.usernameMatches });
+
+    //in this MVP version, we're just sending products directly, not sending username matches.
+    //In the future, might remove the getProducts controller and instead just send the matches.
+    // res.status(200).json({ usernameMatches: res.locals.usernameMatches });
+    res.status(200).json({ products: res.locals.products });
   }
 );
 

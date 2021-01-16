@@ -39,8 +39,7 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
         setOpen(true);
         setResults(items);
         console.log("open: ", open);
-        firstRender.curre;
-        nt = false;
+        firstRender.current = false;
       })
       .catch((err) => console.log(err));
 
@@ -76,7 +75,7 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
 
     const google_url = urlInput;
 
-    fetch(`/api/products/${userId}`, {
+    fetch(`/api/products/addproduct/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -88,6 +87,7 @@ const Search = ({ userId, addProduct, startSpinner, getAllProducts }) => {
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log("res from Search.jsx", res);
         getAllProducts();
         setSpinner(false);
         resetUrl();

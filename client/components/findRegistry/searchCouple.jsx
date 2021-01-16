@@ -14,7 +14,6 @@ import ProductList from "../product/ProductList";
 
 const SearchCouple = ({ list, setList }) => {
   const [coupleUsername, handleSearchVal, resetSearch] = useInput("");
-  // const [guessList, setGuessList] = useState([]);
   const classes = useStyles();
   const [lookingCouple, toggler] = useToggler(false);
 
@@ -41,30 +40,41 @@ const SearchCouple = ({ list, setList }) => {
         );
       });
   };
+  const refreshProducts = (userId) => {
+    fetch(`/api/products/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then(({ products }) => setList(products))
+      .catch((err) => console.log(err));
+  };
+
+  const socket = io();
+  socket.on("products updated", () => {
+    console.log("received a products updated socket");
+    // refreshProducts();
+  });
 
   // buy product from the Register list
-  const buyProduct = (e) => {
-    e.preventDefault();
-
-    fetch(`/api/products/${userId}`, {
+  const buyProduct = (productId, coupleId) => {
+    fetch(`/api/products/buyproduct/${coupleId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        google_url,
-        userId,
-        product_name,
-        image_url,
-        store_name,
-        lowest_daily_price,
-        product_id,
-        date,
+        coupleId,
+        productId,
       }),
     })
       .then((resp) => resp.json())
       .then((res) => {
         console.log(res);
+        console.log(res.storeUrl);
+        //Stretch feature: have the page auto refresh when user buys product.
       })
       .catch((err) => {
         console.log("main ue addProduct", err);
@@ -118,7 +128,11 @@ const SearchCouple = ({ list, setList }) => {
           xl={9}
         >
           {/* buyProduct is for the guess to add to a temp cart locations: ProfuctList*/}
-          <ProductList list={list} buyProduct={buyProduct} />
+          <ProductList
+            list={list}
+            buyProduct={buyProduct}
+            refreshProducts={refreshProducts}
+          />
         </Grid>
       </Grid>
       <ScrollTop>

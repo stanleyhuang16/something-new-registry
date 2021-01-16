@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import useInput from "../hooks/useInput";
-import Register from "./Register";
-import LoginBox from "./LoginBox";
-import LoginNavBar from "../nav/LoginNavBar";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import useInput from '../hooks/useInput';
+import Register from './Register';
+import LoginBox from './LoginBox';
+import LoginNavBar from '../nav/LoginNavBar';
 import {
   Button,
   Box,
@@ -19,14 +19,14 @@ import {
   IconButton,
   InputAdornment,
   Dialog,
-} from "@material-ui/core";
-import useStyles from "../../style/theme";
-import inputCheck from "../../utils/inputCheck";
-import SearchCoupleBtn from "../findRegistry/deleteOrBuyBton";
+} from '@material-ui/core';
+import useStyles from '../../style/theme';
+import inputCheck from '../../utils/inputCheck';
+import SearchCoupleBtn from '../findRegistry/deleteOrBuyBton';
 
 const Login = ({ registerUser, loginUser, ...rest }) => {
-  const [emailInput, updateEmail, resetEmail] = useInput("");
-  const [pwInput, updatePw, resetPw] = useInput("");
+  const [emailInput, updateEmail, resetEmail] = useInput('');
+  const [pwInput, updatePw, resetPw] = useInput('');
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -48,19 +48,19 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
   return (
     <div
       className={classes.root}
-      style={{ filter: open ? "blur(5px)" : "none", background: "#E2F0EC" }}
+      style={{ filter: open ? 'blur(5px)' : 'none', background: '#E2F0EC' }}
     >
       <img
-        style={{ top: "0px", width: "100%", position: "absolute" }}
+        style={{ top: '0px', width: '100%', position: 'absolute' }}
         src="https://i.postimg.cc/cHCX0mhf/kitchen.jpg"
         alt=""
       />
 
       <AppBar
         style={{
-          filter: loginOpen ? "blur(5px)" : "none",
-          background: "#F3F6F5",
-          height: "8%",
+          filter: loginOpen ? 'blur(5px)' : 'none',
+          background: '#F3F6F5',
+          height: '8%',
         }}
       >
         <LoginNavBar setLoginOpen={setLoginOpen} />
@@ -75,11 +75,8 @@ const Login = ({ registerUser, loginUser, ...rest }) => {
           Build your own
         </Button>
         <div>
-          <Link to="/searchcouple">
-            <Button
-              className={classes.loginCreateAccountBtn}
-              variant="contained"
-            >
+          <Link style={{ textDecorationLine: 'none' }} to="/searchcouple">
+            <Button className={classes.findRegistryBtn} variant="contained">
               Search Couple Registry
             </Button>
           </Link>

@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ShopIcon from "@material-ui/icons/Shop";
 import useStyles from "../../style/theme";
 
 const ProductCard = ({
@@ -21,13 +22,17 @@ const ProductCard = ({
   deleteProduct,
   storeUrl,
   buyProduct,
+  isCouple,
+  coupleId,
+  onHold,
+  purchased,
 }) => {
   const handleClick = () => {
-    deleteProduct(productId);
-  };
-
-  const handleBuy = () => {
-    buyProduct(productId);
+    if (isCouple) {
+      deleteProduct(productId);
+    } else {
+      buyProduct(productId, coupleId);
+    }
   };
 
   const classes = useStyles();
@@ -71,12 +76,13 @@ const ProductCard = ({
           <Button
             onClick={handleClick}
             variant="contained"
-            color="secondary"
+            color={isCouple === undefined ? "primary" : "secondary"}
             size="small"
-            startIcon={<DeleteIcon />}
+            startIcon={isCouple === undefined ? <ShopIcon /> : <DeleteIcon />}
             style={{ flexGrow: 1 }}
+            disabled={purchased ? true : false}
           >
-            Delete
+            {purchased ? "Purchased" : isCouple ? "Delete" : "Buy"}
           </Button>
         </CardActions>
       </Card>

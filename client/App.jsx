@@ -15,9 +15,6 @@ import {
 } from "react-router-dom";
 
 //This line creates the websocket connection!!!
-const socket = io();
-
-socket.emit("test emission", "content of test emission");
 
 const App = (props) => {
   const [email, setEmail] = useState("");

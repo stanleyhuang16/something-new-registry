@@ -1,5 +1,5 @@
-const priceTrackerDB = require('../models/priceTrackerModel.js');
-const bcrypt = require('bcryptjs');
+const priceTrackerDB = require("../models/priceTrackerModel.js");
+const bcrypt = require("bcryptjs");
 
 const authController = {};
 
@@ -28,8 +28,8 @@ authController.createUser = async (req, res, next) => {
         return next(err);
       });
   } else {
-    console.log('password or username rejected');
-    return res.status(418).json({ error: 'invalid email or password' });
+    console.log("password or username rejected");
+    return res.status(418).json({ error: "invalid email or password" });
   }
 };
 
@@ -37,9 +37,9 @@ authController.createUser = async (req, res, next) => {
 authController.setSSIDCookie = (req, res, next) => {
   //First, set cookie on the client to a random number:
   let randomNumber = Math.floor(Math.random() * 1000000);
-  let options = { maxAge: 90000000, httpOnly: true };
+  let options = { maxAge: 90000000 };
 
-  res.cookie('ssid', randomNumber, options);
+  res.cookie("ssid", randomNumber, options);
 
   //second, save the ssid into the database.
   let queryString = `
@@ -77,15 +77,16 @@ authController.verifyUser = (req, res, next) => {
             if (isMatch) {
               res.locals.loginInfo = {};
               res.locals.loginInfo.userId = data.rows[0]._id;
+              res.locals.loginInfo.coupleId = data.rows[0]._id;
               res.locals.loginInfo.email = req.body.email;
               return next();
             } else {
-              return res.status(400).json({ error: 'invalid password' });
+              return res.status(400).json({ error: "invalid password" });
             }
           });
       } else {
-        console.log('invalid email or password');
-        return res.status(200).json({ error: 'invalid email or password' });
+        console.log("invalid email or password");
+        return res.status(200).json({ error: "invalid email or password" });
       }
     })
     .catch((err) => {
@@ -96,7 +97,7 @@ authController.verifyUser = (req, res, next) => {
 
 //Checks if the username is in the database.
 authController.checkUsername = (req, res, next) => {
-  console.log('in check username');
+  console.log("in check username");
   const { coupleusername } = req.params;
   let queryString = `
     SELECT *
@@ -116,7 +117,7 @@ authController.checkUsername = (req, res, next) => {
         res.locals.coupleInfo.coupleEmail = data.rows[0].email;
         return next();
       } else {
-        return res.status(400).json({ error: 'no couple found' });
+        return res.status(400).json({ error: "no couple found" });
       }
     })
     .catch((err) => {
@@ -138,7 +139,7 @@ authController.lookUpCouple = (req, res, next) => {
   priceTrackerDB
     .query(queryString, values)
     .then((data) => {
-      console.log('data.rows: ', data.rows);
+      console.log("data.rows: ", data.rows);
       if (data.rows.length) {
         //do next: need to iterate through the results and grab usernames
         // res.locals.usernameMatches = [];
@@ -148,11 +149,11 @@ authController.lookUpCouple = (req, res, next) => {
 
         //since we're only getting the exact match here, assume that the first result is correct.
         req.params.coupleId = data.rows[0]._id;
-        console.log('coupleId in lookUpCouple', req.params.coupleId);
+        console.log("coupleId in lookUpCouple", req.params.coupleId);
 
         return next();
       } else {
-        return res.status(400).json({ error: 'no couples match your search' });
+        return res.status(400).json({ error: "no couples match your search" });
       }
     })
     .catch((err) => {
